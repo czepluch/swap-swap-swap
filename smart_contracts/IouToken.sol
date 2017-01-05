@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.7;
 
 contract Owned {
     address owner;
@@ -50,6 +50,14 @@ contract IOUToken is Owned {
         }
         // Actually update the balances
         balances[account] += amount;
+    }
+
+    function balance(address account) constant returns(int) {
+        return balances[account];
+    }
+
+    function is_approved(address account) constant returns(bool) {
+        return approved_accounts[account];
     }
 
     // IOU Token owner can whitelist an account
