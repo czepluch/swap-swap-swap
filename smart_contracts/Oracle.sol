@@ -17,4 +17,12 @@ contract Oracle {
         date = _date;
         rate = _rate;
     }
+
+    function getDate() constant returns (uint) {
+        return date;
+    }
+
+    function getRate() constant returns (uint) {
+        return rate;
+    }
 }

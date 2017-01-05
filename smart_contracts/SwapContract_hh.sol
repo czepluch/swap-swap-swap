@@ -56,7 +56,7 @@ contract SwapContract {
         uint fixed_leg_payment = fixed_rate * nominal_value / rate_divisor;
 
         // calc floating leg payment
-        uint floating_rate = iro.getFloatingRate(); // pct * 1000
+        uint floating_rate = iro.getRate(); // pct * 1000
         uint floating_leg_payment = floating_rate * nominal_value / rate_divisor;
 
         // calculate netted payouts
