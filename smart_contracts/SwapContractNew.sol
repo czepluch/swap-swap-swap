@@ -18,7 +18,7 @@ contract SwapContract {
 
     //construcor
     function SwapContract(
-                uint _fixed_rate,
+                uint _fixed_rate, 
                 address _oracle_address, 
                 address _floating_leg_account, 
                 address _fixed_leg_account, 
