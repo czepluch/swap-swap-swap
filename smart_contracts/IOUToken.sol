@@ -19,7 +19,7 @@ contract IOUToken {
     }
 
 
-    function balanceOf(address account) constant returns uint {
+    function balanceOf(address account) constant returns (int) {
         return balances[account];
     }
 
@@ -39,7 +39,7 @@ contract IOUToken {
         balances[account] += amount;
     }
 
-    function _transfer (int amount, address sender, address receiver) {
+    function _transfer(int amount, address sender, address receiver) {
         if (amount < 0) throw;
         _updateBalance(sender, -amount);
         _updateBalance(receiver, amount);
@@ -47,18 +47,18 @@ contract IOUToken {
     }
 
     // transfer from user to user
-    function transfer (int amount, address receiver) {
+    function transfer(int amount, address receiver) {
         _transfer(amount, msg.sender, receiver);
     }
 
     // delegated transfers by approved account
-    function transfer_by_delegate(int amount, address sender, address receiver) {
+    function transferByDelegate(int amount, address sender, address receiver) {
         if (!approved_accounts[msg.sender]) throw; // check delegate is approved
         _transfer(amount, sender, receiver);
     }
 
     // IOU Token owner can whitelist an account
-    function approve_account(address account) onlyOwner {
+    function approveAccount(address account) onlyOwner {
         approved_accounts[account] = true;
         Approved(account);
     }

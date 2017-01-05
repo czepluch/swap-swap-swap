@@ -8,11 +8,19 @@ contract Oracle {
 
     function Oracle() {
         owner = msg.sender;
-    };
+    }
 
-    function update(_date, _rate) {
+    function update(uint _date, uint _rate) {
         if (msg.sender != owner) throw;
         date = _date;
         rate = _rate;
+    }
+
+    function getDate() constant returns (uint) {
+        return date;
+    }
+
+    function getFloatingRate() constant returns (uint) {
+        return rate;
     }
 }
