@@ -20,6 +20,7 @@ contract SwapContract {
     //construcor
 
     function SwapContract(
+                uint _fixed_rate, 
                 address _oracle_address, 
                 address _floating_leg_account, 
                 address _fixed_leg_account, 
@@ -29,6 +30,7 @@ contract SwapContract {
                 uint _accrual_period, 
                 address _IOU_token_address)
     {
+        fixed_rate = _fixed_rate;
         oracle_address = _oracle_address;
         IOU_token_address = _IOU_token_address;
         floating_leg_account = _floating_leg_account;
