@@ -8,8 +8,6 @@ contract Oracle {
 
     function Oracle() {
         owner = msg.sender;
-        date = now;
-        rate = 123;
     }
 
     function update(uint _date, uint _rate) {
