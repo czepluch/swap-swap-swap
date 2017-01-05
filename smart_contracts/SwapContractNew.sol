@@ -5,7 +5,7 @@ pragma solidity ^0.4.0;
 
 contract SwapContract {
 
-    uint global_interest_rate;
+    
     uint fixed_rate;
     address oracle_address;
     address IOU_token_address;
@@ -43,13 +43,14 @@ contract SwapContract {
     // Check if payment is due, calculate net payment amount, initiate IOU transfer
     
     function initiatePayment() {
-        uint day = now/(60*60*24);
+        Oracle oracle = Oracle(oracle_address);
+        uint day = oracle.getDate();
         if (day > value_date && day < maturity_date) throw; //check whether swap is active
         if (day != last_fixing_date + accrual_period) throw; //check fixing date is matched
         last_fixing_date = day; //set date to paid
-        updateInterestRate("EUR"); //query oracle for interest rate
-        uint floating_leg_payment = fixed_rate/100 * nominal_amount; //calculate floating leg payment
-        uint fixed_leg_payment = global_interest_rate/10000 * nominal_amount; //calculate fixed leg payment
+        uint floating_rate= oracle.getRate(); //query oracle for interest rate
+        uint floating_leg_payment = fixed_rate/10000 * nominal_amount; //calculate floating leg payment
+        uint fixed_leg_payment = floating_rate/10000 * nominal_amount; //calculate fixed leg payment
         int net_payment_amount = int(fixed_leg_payment - floating_leg_payment); //calculate net payment amount
         IOUToken iou = IOUToken(IOU_token_address);
         if (net_payment_amount > 0) { //if net payment amount is positive
@@ -62,33 +63,33 @@ contract SwapContract {
     }
         
 
-    function updateInterestRate(bytes32 currency) {
-        InterestRateOracle iro = InterestRateOracle(oracle_address);
-        global_interest_rate = iro.getInterestRate(currency);
-    }
-
 }
 
+contract Oracle {
 
+    uint public date;
+    uint public rate;
+    address public owner;
 
-
-contract InterestRateOracle {
-
-    function getInterestRate(bytes32 currency) returns (uint) {
-        // call returnInterestRate with result from oracle
-        return interestRate(currency);
+    function Oracle() {
+        owner = msg.sender;
     }
 
-    function interestRate(bytes32 currency) private returns (uint) {
-        if (currency == "USD") {
-            return 135; // two decimal points
-        } if (currency == "EUR") {
-            return 129;
-        } else {
-            return 133;
-        }
+    function update(uint _date, uint _rate) {
+        if (msg.sender != owner) throw;
+        date = _date;
+        rate = _rate;
+    }
+
+    function getDate() constant returns (uint) {
+        return date;
+    }
+
+    function getRate() constant returns (uint) {
+        return rate;
     }
 }
+
 
 contract IOUToken {
     mapping (address => bool) public approved_accounts;
