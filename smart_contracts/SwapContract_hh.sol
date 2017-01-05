@@ -16,15 +16,17 @@ contract SwapContract {
     address fixed_leg_account //
     address clearing_token_address //
 
-    function SwapContract(int _value_date,
-                            int _maturity_date,
-                            uint _accural_period,
-                        uint _nominal_value,
-                        uint _fixed_rate,
-                        address _oracle_address,
-                        address _floating_leg_account,
-                        address _fixed_leg_account,
-                        address _clearing_token_address) {
+    function SwapContract(
+        int _value_date,
+        int _maturity_date,
+        uint _accural_period,
+        uint _nominal_value,
+        uint _fixed_rate,
+        address _oracle_address,
+        address _floating_leg_account,
+        address _fixed_leg_account,
+        address _clearing_token_address)
+    {
         value_date = _value_date;
         maturity_date = _maturity_date;
         accural_period = _accural_period;
