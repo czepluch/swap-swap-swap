@@ -1,4 +1,6 @@
-import "InterestRateOracle.sol";
+pragma solidity ^0.4.0;
+
+import "Oracle.sol";
 import "IOUToken.sol";
 
 
@@ -39,24 +41,27 @@ contract SwapContract {
 
     event Fixation(int indexed date, int indexed netted_payment);
 
-    function trigger(int _date) {
-        // _date: days since 1.1.1970
-        if (_date - last_fixation_date != accural_period) throw;
-        if (_date > maturity_date) throw;
-        if (_date < value_date) throw;
-        last_fixation_date = _date;
+    function trigger() {
+        Oracle iro = Oracle(oracle_address);
+        date = iro.getDate(); // days since 1.1.1970
+
+        // date: days since 1.1.1970
+        if (date - last_fixation_date != accural_period) throw;
+        if (date > maturity_date) throw;
+        if (date < value_date) throw;
+        last_fixation_date = date;
 
         // calc fixed leg payment
         int fixed_leg_payment = fixed_rate * nominal_value / rate_divisor;
 
         // calc floating leg payment
-        InterestRateOracle iro = InterestRateOracle(oracle_address);
-        floating_rate = iro.getInterestRate(); // pct * 1000
+        Oracle iro = Oracle(oracle_address);
+        floating_rate = iro.getFloatingRate(); // pct * 1000
         int floating_leg_payment = floating_rate * nominal_value / rate_divisor;
 
         // calculate netted payouts
         int netted_payment = floating_leg_payment - fixed_leg_payment;
-        Fixation(_date, netted_payment);  // emit here so we have implicit direction of payment
+        Fixation(date, netted_payment);  // emit here so we have implicit direction of payment
         if (netted_payment > 0) {
             sender = floating_leg_account;
             receiver = fixed_leg_account;
