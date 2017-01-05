@@ -40,24 +40,27 @@ contract IOUToken is Owned {
     function updateBalance(address account, int amount) private {
         int old_balance = balances[account];
         int new_balance = old_balance + amount;
+        // Check for positive value overflow
         if (amount > 0 && new_balance < old_balance) {
             throw;
         }
+        // Check for negative value overflow
         if (amount < 0 && new_balance > old_balance) {
             throw;
         }
+        // Actually update the balances
         balances[account] += amount;
     }
 
-    // IOU Token owner can whitelist sc
-    function approve_swap_contract (address swap_contract_address) onlyOwner {
-        approved_accounts[swap_contract_address] = true;
-        Approved(swap_contract_address);
+    // IOU Token owner can whitelist an account
+    function approve_account (address account) onlyOwner {
+        approved_accounts[account] = true;
+        Approved(account);
     }
 
-    // IOU Token owner can blacklist sc
-    function block_swap_contract (address swap_contract_address) onlyOwner {
-        approved_accounts[swap_contract_address] = false;
-        Disapproved(swap_contract_address);
+    // IOU Token owner can unwhitelist an account
+    function disapprove_account (address account) onlyOwner {
+        approved_accounts[account] = false;
+        Disapproved(account);
     }
 }
