@@ -1,41 +1,31 @@
 pragma solidity ^0.4.0;
 
-contract Owned {
-    address owner;
-
-    modifier onlyOwner() {
-        if (msg.sender != owner) {
-            throw;
-        } else {
-            _;
-        }
-    }
-
-    function Owned() {
-        owner = msg.sender;
-    }
-
-    function changeOwner(address newOwner) onlyOwner {
-        owner = newOwner;
-    }
-}
-
-contract IOUToken is Owned {
+contract IOUToken {
     mapping (address => bool) public approved_accounts;
     mapping (address => int) public balances;
 
-    event TransferredDirectly(address sender, address receiver, int amount);
-    event TransferredByApproved(address sender, address receiver, int amount);
+    event Transferred(address sender, address receiver, int amount);
     event Approved(address account);
     event Disapproved(address account);
 
-    // Direct transfer from user to user
+    // transfer from user to user
     function transfer (int amount, address receiver) {
-        if (amount < 0) throw;
-        updateBalance(msg.sender, -amount);
-        updateBalance(receiver, amount);
-        TransferredDirectly(msg.sender, receiver, amount);
+        _transfer(amount, msg.sender, receiver);
     }
+
+    function _transfer (int amount, address sender address receiver) {
+        if (amount < 0) throw;
+        updateBalance(sender, -amount);
+        updateBalance(receiver, amount);
+        Transferred(sender, receiver, amount);
+    }
+
+    // delegated transfers by approved account
+    function transfer_by_delegate(int amount, address sender, address receiver) {
+        if (!approved_accounts[msg.sender]) throw; // check delegate is approved
+        _transfer(amount, sender, receiver);
+    }
+
 
     function updateBalance(address account, int amount) private {
         int old_balance = balances[account];
