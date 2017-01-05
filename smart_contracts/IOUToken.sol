@@ -56,7 +56,7 @@ contract IOUToken {
         balances[account] += amount;
     }
 
-    function _transfer (int amount, address sender address receiver) {
+    function _transfer (int amount, address sender, address receiver) {
         if (amount < 0) throw;
         _updateBalance(sender, -amount);
         _updateBalance(receiver, amount);
