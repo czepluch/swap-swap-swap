@@ -1,0 +1,12 @@
+Nominal amount: 1,000,000
+Valuation date: 1
+Maturity date: 100
+Accrual period: 10
+Fixed rate: 2%
+Floating rate: 3.5%
+
+First payment date: 11
+
+Net payment: 1,000,000*0.035-1,000,000*0.02 = 15,000
+
+Balances should be: Floating: 15,000, Fixed: -15,000
