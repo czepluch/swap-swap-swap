@@ -2,7 +2,7 @@ pragma solidity ^0.4.0;
 
 contract Oracle {
 
-    uint public day;
+    uint public date;
     uint public rate;
     address owner;
 
@@ -10,9 +10,9 @@ contract Oracle {
         owner = msg.sender;
     };
 
-    function update(_day, _rate) {
+    function update(_date, _rate) {
         if (msg.sender != owner) throw;
-        day = _day;
+        date = _date;
         rate = _rate;
     }
 }
