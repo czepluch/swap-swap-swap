@@ -16,7 +16,7 @@ def test_swap_contract():
     state = tester.state()
 
     oracle_path = get_contract_path('Oracle.sol')
-    oracle = state.contract(
+    oracle_contract = state.abi_contract(
         None,
         path=oracle_path,
         language='solidity',
@@ -24,7 +24,7 @@ def test_swap_contract():
     )
 
     IOU_token_path = get_contract_path('IOUToken.sol')
-    iou_token = state.contract(
+    iou_token = state.abi_contract(
         None,
         path=IOU_token_path,
         language='solidity',
@@ -36,9 +36,15 @@ def test_swap_contract():
         None,
         path=swap_path,
         language='solidity',
-        libraries={'Oracle': oracle.encode('hex'), 'IOUToken': iou_token.encode('hex')},
-        constructor_parameters=[oracle.encode('hex'), tester.k1, tester.k2, 1, 100, 1000000, 10, iou_token.encode('hex')],
+        libraries={'Oracle': oracle_contract.address.encode('hex'), 'IOUToken': iou_token.address.encode('hex')},
+        constructor_parameters=[200, oracle_contract.address.encode('hex'), tester.a1, tester.a2, 1, 100, 1000000, 10, iou_token.address.encode('hex')],
     )
 
-
+    oracle_contract.update(11, 350)
+    iou_token.approveAccount(swap_contract.address)
+    assert iou_token.balanceOf(tester.a1) == 0
+    assert iou_token.balanceOf(tester.a2) == 0
+    swap_contract.initiatePayment()
+    assert iou_token.balanceOf(tester.a1) == 15000
+    assert iou_token.balanceOf(tester.a2) == -15000
 
