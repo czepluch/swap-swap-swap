@@ -4,16 +4,30 @@ contract IOUToken {
     mapping (address => bool) public approved_accounts;
     mapping (address => int) public balances;
 
+    address owner;
+
     event Transferred(address sender, address receiver, int amount);
     event Approved(address account);
     event Disapproved(address account);
 
+    modifier onlyOwner() {
+        if (msg.sender != owner) {
+            throw;
+        } else {
+            _;
+        }
+    }
+
+    function IOUToken() {
+        owner = msg.sender;
+    }
+
     // transfer from user to user
-    function transfer (int amount, address receiver) {
+    function transfer(int amount, address receiver) {
         _transfer(amount, msg.sender, receiver);
     }
 
-    function _transfer (int amount, address sender address receiver) {
+    function _transfer(int amount, address sender, address receiver) private {
         if (amount < 0) throw;
         updateBalance(sender, -amount);
         updateBalance(receiver, amount);
@@ -25,7 +39,6 @@ contract IOUToken {
         if (!approved_accounts[msg.sender]) throw; // check delegate is approved
         _transfer(amount, sender, receiver);
     }
-
 
     function updateBalance(address account, int amount) private {
         int old_balance = balances[account];
@@ -43,13 +56,13 @@ contract IOUToken {
     }
 
     // IOU Token owner can whitelist an account
-    function approve_account (address account) onlyOwner {
+    function approve_account(address account) onlyOwner {
         approved_accounts[account] = true;
         Approved(account);
     }
 
     // IOU Token owner can unwhitelist an account
-    function disapprove_account (address account) onlyOwner {
+    function disapprove_account(address account) onlyOwner {
         approved_accounts[account] = false;
         Disapproved(account);
     }
