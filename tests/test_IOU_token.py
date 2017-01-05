@@ -13,7 +13,7 @@ def get_contract_path(contract_name):
 
 
 def test_iou_token():
-    iou_token_path = get_contract_path('IouToken.sol')
+    iou_token_path = get_contract_path('IOUToken_testing.sol')
 
     state = tester.state()
     logs = list()
