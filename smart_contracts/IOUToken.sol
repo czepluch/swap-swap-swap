@@ -18,23 +18,6 @@ contract IOUToken {
         _;
     }
 
-    // transfer from user to user
-    function transfer(int amount, address receiver) {
-        _transfer(amount, msg.sender, receiver);
-    }
-
-    function _transfer(int amount, address sender, address receiver) private {
-        if (amount < 0) throw;
-        updateBalance(sender, -amount);
-        updateBalance(receiver, amount);
-        Transferred(sender, receiver, amount);
-    }
-
-    // delegated transfers by approved account
-    function transfer_by_delegate(int amount, address sender, address receiver) {
-        if (!approved_accounts[msg.sender]) throw; // check delegate is approved
-        _transfer(amount, sender, receiver);
-    }
 
     function balanceOf(address account) constant returns uint {
         return balances[account];
