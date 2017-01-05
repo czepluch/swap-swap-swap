@@ -1,0 +1,31 @@
+Swap contract
+
+define:
+value date
+maturity date
+nominal value
+accrual period
+fixed rate
+floatinginterestoracleaddress
+
+lastpayeddate
+
+floating rate payer address
+fixed rate payer address
+
+
+function: payment (to be triggered by alarm clock)
+
+
+0. check date for payment event (is today = start + accrual date)
+1. is already payed? (check is not lastpayedsdate = today)
+2. add today in lastpayedate
+3. query interest oracle for floating rate
+4. calculate floating rate payment (nominal amount * floating rate)
+
+7. transfer fixed rate amount of ether to floating rate payer (executing the transfer function in IOU contract)
+8. transfer floating rate amount of ether to fixed rate payer
+
+
+
+
