@@ -32,7 +32,7 @@ def test_iou_token():
     with pytest.raises(Exception):
         iou_token.transfer(-1, tester.a2)
 
-    iou_token.approve_account(tester.a4)
+    iou_token.approveAccount(tester.a4)
 
     # Mine a block to receive log information about transactions
     state.mine()
@@ -51,13 +51,11 @@ def test_iou_token():
     assert logs[1]["account"].decode('hex') == tester.a4
 
     # Disapprove approved account
-    iou_token.disapprove_account(tester.a4)
+    iou_token.approveAccount(tester.a4)
 
     # Mine a block to really disapprove account tester.a4
     state.mine()
 
-    # Checking the dissaprove_account function
-    assert iou_token.is_approved(tester.a4) is False
     assert len(logs) == 3
 
     # Producing an underflow for account tester.a0

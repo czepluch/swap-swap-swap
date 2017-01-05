@@ -2,7 +2,7 @@ IRS contracts for the Mainz Training Days
 
 Requirements are
 
-`pyethereum`
+`ethereum`
 
 and
 
