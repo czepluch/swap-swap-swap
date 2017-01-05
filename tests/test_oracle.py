@@ -26,8 +26,6 @@ def test_oracle():
 
     assert oracle.owner() == tester.a0.encode('hex')
     oracle.update(int(time.time()), 123)
-    assert oracle.date() == int(time.time())
-    assert oracle.rate() == 123
 
     assert oracle.getDate() == int(time.time())
     assert oracle.getRate() == 123

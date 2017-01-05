@@ -15,7 +15,7 @@ def get_contract_path(contract_name):
 def test_swap_contract():
     state = tester.state()
 
-    oracle_path = get_contract_path('InterestRateOracle.sol')
+    oracle_path = get_contract_path('Oracle.sol')
     oracle = state.contract(
         None,
         path=oracle_path,
@@ -23,19 +23,22 @@ def test_swap_contract():
         # constructor_parameters=[],
     )
 
-    swap_path = get_contract_path('SwapContract.sol')
+    IOU_token_path = get_contract_path('IOUToken.sol')
+    iou_token = state.contract(
+        None,
+        path=IOU_token_path,
+        language='solidity',
+        # constructor_parameters=[],
+    )
+
+    swap_path = get_contract_path('SwapContractNew.sol')
     swap_contract = state.abi_contract(
         None,
         path=swap_path,
         language='solidity',
-        libraries={'SwapContract': oracle.encode('hex')},
-        constructor_parameters=[oracle],
+        libraries={'Oracle': oracle.encode('hex'), 'IOUToken': iou_token.encode('hex')},
+        constructor_parameters=[oracle.encode('hex'), tester.k1, tester.k2, 1, 100, 1000000, 10, iou_token.encode('hex')],
     )
 
-    swap_contract.updateInterestRate("USD", sender=tester.k0)
-    assert swap_contract.getInterestRate() == 135
-    swap_contract.updateInterestRate("EUR", sender=tester.k0)
-    assert swap_contract.getInterestRate() == 129
-    swap_contract.updateInterestRate("NON", sender=tester.k0)
-    assert swap_contract.getInterestRate() == 133
+
 
